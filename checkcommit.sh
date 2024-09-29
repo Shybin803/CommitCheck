@@ -17,8 +17,12 @@ if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
   exit 1
 fi
 
+# Fetch latest changes from the remote
+echo "Fetching latest changes from remote..."
+git fetch origin
+
 # Check if the commit exists in the source branch
-if git branch --contains $COMMIT_HASH | grep -q "$SOURCE_BRANCH"; then
+if git branch -r --contains $COMMIT_HASH | grep -q "origin/$SOURCE_BRANCH"; then
   echo "Commit $COMMIT_HASH exists in the source branch '$SOURCE_BRANCH'."
 else
   echo "Commit $COMMIT_HASH does not exist in the source branch '$SOURCE_BRANCH'."
@@ -26,9 +30,8 @@ else
 fi
 
 # Check if the commit exists in the target branch
-if git branch --contains $COMMIT_HASH | grep -q "$TARGET_BRANCH"; then
+if git branch -r --contains $COMMIT_HASH | grep -q "origin/$TARGET_BRANCH"; then
   echo "Commit $COMMIT_HASH has been moved to the target branch '$TARGET_BRANCH'."
 else
   echo "Commit $COMMIT_HASH has NOT been moved to the target branch '$TARGET_BRANCH'."
 fi
-
